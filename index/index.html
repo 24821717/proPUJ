@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   
+    <title>Boton mint</title>
+    <link rel="icon" type="image/png" href="loguito.jpeg">
+
+    <style>
+        select {
+        background-color: #cebce6;
+        font-family: 'Smooth v2', sans-serif; 
+        font-weight: bold;
+        font-size: 20px;
+} 
+body {
+            background-image: url('img6.jpeg');            
+            background-size: cover; /* Ajusta el tamaño de la imagen de fondo */
+            background-position: center; /* Centra la imagen de fondo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            font-size: 20px;
+            color: rgb(10, 10, 10);
+        }
+
+        select {
+            background-color: rgba(5, 75, 26, 0.7); /* Cambia el color de fondo del select */
+            font-family: 'Smooth v2', sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+            border: none; /* Elimina el borde del select si no lo deseas */
+            border-radius: 5px;
+            padding: 5px;
+            color: #00FF00;
+        }
+
+        #walletAddress {
+            font-size: 24px;
+            color: #7ae07a;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+       
+
+        button {
+            background-color: rgb(8, 184, 32);
+            border: none;
+            padding: 10px 50px;
+            border-radius: 5px;
+            margin: 10px 0;
+            cursor: pointer;
+            color: rgb(99, 219, 29);
+            font-weight: 600;
+            color: rgb(14, 8, 8);
+            font-size: 17px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+
+        }
+
+        #bannerText {
+            position: absolute;
+            top: 20%;
+            left: 30%; /* Ajusta la posición horizontal del texto */
+            transform: translateY(-50%);
+            font-size: 60px;
+            font-family: 'Smooth v2', sans-serif;
+            color: rgb(19, 85, 19);
+            text-shadow: 0 0 10px rgb(12, 51, 12), 0 0 20px rgb(0, 255, 0), 0 0 30px rgb(0, 255, 0), 0 0 40px rgb(0, 255, 0);
+            margin: 0;
+            padding: 0;
+            letter-spacing: 5px;
+        }
+
+    </style>
+    <!-- Asegúrate de tener las referencias correctas a los scripts de Solana Wallet Adapter -->
+
+</head>
+
+<body>
+    <nav>
+        <button id="connect">CONECT WALLET</button>
+    </nav>
+    <h1 id="bannerText">Ⲱⲓⲧⲥⲏ Ⲣⲉⲣⲉ ⲓ⳽ ⲥⲟⲙⲓⲛⳋ</h1>
+    <span id="container" style="text-align: center;">
+         <div>
+            <p> <span id="walletAddress"><b>ШΛŁŁΞT ΛÐÐЯΞSS</b></span></p>
+        </div>
+
+        <div>
+            <select type="text" id="amount">
+                <option value="0">SΞŁΞϾT ΛMФUЛT</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+        <select type="text" id="walletSelect"></select>
+        <button id="mint">MłЛT</button>
+    </span>
+    
+    <script src="https://cdn.solana.com/latest/js/vendor/react.development.js"></script>
+    <script src="https://cdn.solana.com/latest/js/vendor/react-dom.development.js"></script>
+    <script src="https://cdn.solana.com/latest/js/vendor/buffer.js"></script>
+    <script src="https://cdn.solana.com/latest/js/vendor/bs58.js"></script>
+    <script src="https://cdn.solana.com/latest/js/vendor/soproxify.js"></script>
+    <script src="https://cdn.solana.com/latest/js/wallet-adapter.js"></script>
+    <script src="https://cdn.solana.com/latest/js/wallet-adapter-react.js"></script>
+    <script src="https://cdn.solana.com/latest/js/wallet-adapter-react-ui.js"></script>
+
+    <script type="module" async crossorigin="anonymous">
+        import {
+            WalletAdapter,
+            bitpie,
+            blocto,
+            coin98,
+            ledger,
+            mathwallet,
+            phantom,
+            solflare,
+            sollet,
+            safepal,
+            torus,
+            walletConnect,
+            walletLink
+        } from '@solana/wallet-adapter';
+
+        import { Connection, Provider } from '@solana/web3.js';
+
+        const contractAddress = "0xE9e41343e352e54fF060b2bf263a196474d001dF";
+        const abi = [
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "quantity",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "mint",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            }
+        ];
+
+        const { WalletAdapter, bitpie, blocto, coin98, ledger, mathwallet, phantom, solflare, sollet, safepal, torus, walletConnect, walletLink } = solanaWalletAdapter;
+        const { Connection, Provider } = solanaWeb3;
+
+        const network = "https://api.devnet.solana.com"; // Cambia a la red correcta
+        const connection = new Connection(network);
+        const provider = new Provider(connection, {});
+
+        const wallets = [bitpie, blocto, coin98, ledger, mathwallet, phantom, solflare, sollet, safepal, torus, walletConnect, walletLink];
+
+        window.addEventListener("load", async () => {
+            const wallet = new WalletAdapter({
+                provider,
+                wallets,
+            });
+
+            const connectBtn = document.getElementById("connect");
+            const mintBtn = document.getElementById("mint");
+            const amountEl = document.getElementById("amount");
+            const walletSelect = document.getElementById("walletSelect");
+            const walletAddressEl = document.getElementById("walletAddress");
+
+            let account = null;
+
+            // Intenta conectar automáticamente si ya hay una billetera activa
+            await wallet.connect();
+
+            // Llena el menú desplegable con las opciones de billetera
+            wallets.forEach((w, index) => {
+                const option = document.createElement("option");
+                option.value = index.toString();
+                option.text = w.name;
+                walletSelect.appendChild(option);
+            });
+
+            connectBtn.addEventListener("click", async () => {
+                // Intenta conectar la billetera seleccionada en el menú desplegable
+                const selectedWalletIndex = walletSelect.value;
+                await wallet.connect(selectedWalletIndex);
+            });
+
+            mintBtn.addEventListener("click", async () => {
+                await mint();
+            });
+
+            async function mint() {
+                // Resto del código para mintear...
+            }
+
+            wallet.on("connect", (publicKey) => {
+                account = publicKey;
+                walletAddressEl.textContent = account.toBase58();
+                toggleElementsVisibility(true);
+            });
+
+            wallet.on("disconnect", () => {
+                account = null;
+                walletAddressEl.textContent = "";
+                toggleElementsVisibility(false);
+            });
+
+            function toggleElementsVisibility(connected) {
+                connectBtn.hidden = connected;
+                document.getElementById("container").hidden = !connected;
+            }
+        });
+    </script>
+</body>
+
+</html>    <script src="https://cdn.solana.com/latest/js/vendor/react.development.js"></script>
+<script src="https://cdn.solana.com/latest/js/vendor/react-dom.development.js"></script>
+<script src="https://cdn.solana.com/latest/js/vendor/buffer.js"></script>
+<script src="https://cdn.solana.com/latest/js/vendor/bs58.js"></script>
+<script src="https://cdn.solana.com/latest/js/vendor/soproxify.js"></script>
+<script src="https://cdn.solana.com/latest/js/wallet-adapter.js"></script>
+<script src="https://cdn.solana.com/latest/js/wallet-adapter-react.js"></script>
+<script src="https://cdn.solana.com/latest/js/wallet-adapter-react-ui.js"></script>
+
+<script type="module" async crossorigin="anonymous">
+    import {
+        WalletAdapter,
+        bitpie,
+        blocto,
+        coin98,
+        ledger,
+        mathwallet,
+        phantom,
+        solflare,
+        sollet,
+        safepal,
+        torus,
+        walletConnect,
+        walletLink
+    } from '@solana/wallet-adapter';
+
+    import { Connection, Provider } from '@solana/web3.js';
+
+    const contractAddress = "0xE9e41343e352e54fF060b2bf263a196474d001dF";
+    const abi = [
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "quantity",
+                    "type": "uint256"
+                }
+            ],
+            "name": "mint",
+            "outputs": [],
+            "stateMutability": "payable",
+            "type": "function"
+        }
+    ];
+
+    const { WalletAdapter, bitpie, blocto, coin98, ledger, mathwallet, phantom, solflare, sollet, safepal, torus, walletConnect, walletLink } = solanaWalletAdapter;
+    const { Connection, Provider } = solanaWeb3;
+
+    const network = "https://api.devnet.solana.com"; // Cambia a la red correcta
+    const connection = new Connection(network);
+    const provider = new Provider(connection, {});
+
+    const wallets = [bitpie, blocto, coin98, ledger, mathwallet, phantom, solflare, sollet, safepal, torus, walletConnect, walletLink];
+
+    window.addEventListener("load", async () => {
+        const wallet = new WalletAdapter({
+            provider,
+            wallets,
+        });
+
+        const connectBtn = document.getElementById("connect");
+        const mintBtn = document.getElementById("mint");
+        const amountEl = document.getElementById("amount");
+        const walletSelect = document.getElementById("walletSelect");
+        const walletAddressEl = document.getElementById("walletAddress");
+
+        let account = null;
+
+        // Intenta conectar automáticamente si ya hay una billetera activa
+        await wallet.connect();
+
+        // Llena el menú desplegable con las opciones de billetera
+        wallets.forEach((w, index) => {
+            const option = document.createElement("option");
+            option.value = index.toString();
+            option.text = w.name;
+            walletSelect.appendChild(option);
+        });
+
+        connectBtn.addEventListener("click", async () => {
+            // Intenta conectar la billetera seleccionada en el menú desplegable
+            const selectedWalletIndex = walletSelect.value;
+            await wallet.connect(selectedWalletIndex);
+        });
+
+        mintBtn.addEventListener("click", async () => {
+            await mint();
+        });
+
+        async function mint() {
+            // Resto del código para mintear...
+        }
+
+        wallet.on("connect", (publicKey) => {
+            account = publicKey;
+            walletAddressEl.textContent = account.toBase58();
+            toggleElementsVisibility(true);
+        });
+
+        wallet.on("disconnect", () => {
+            account = null;
+            walletAddressEl.textContent = "";
+            toggleElementsVisibility(false);
+        });
+
+        function toggleElementsVisibility(connected) {
+            connectBtn.hidden = connected;
+            document.getElementById("container").hidden = !connected;
+        }
+    });
+</script>
+</body>
+
+</html>

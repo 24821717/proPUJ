@@ -1,0 +1,41 @@
+[package]
+name = "PRO_PUJ"
+version = "0.0.0"
+description = "DESCRIPTION PUJ...."
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+path = "programs/wen-new-standard/src/lib.rs"
+name = "PRO_PUJ"
+
+
+[dependencies]
+anchor-lang = "0.30.0"
+anchor-spl = "0.30.0"
+bpf = "0.1.3"
+cargo-bpf = "2.3.0"
+solana-program = "1.18.12"
+bpf-sys = "2.3.0"
+anchor = "0.0.1"
+solana-cli = "1.18.12"
+cfg-if = "1.0.0"
+
+
+[features]
+no-entrypoint = []
+no-idl = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dev-dependencies.cargo-husky]
+version = "1"
+default-features = false
+features = ["precommit-hook", "run-cargo-fmt", "run-cargo-clippy"]
+
+[profile.release]
+overflow-checks = false
+debug-assertions = false
+lto = true
+incremental = false
+panic = "abort"

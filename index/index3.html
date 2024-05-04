@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   
+    <title>Boton mint</title>
+    <style>
+        select {
+        background-color: #cebce6;
+        font-family: 'Smooth v2', sans-serif; 
+        font-weight: bold;
+        font-size: 20px;
+} 
+        body {
+            background-image: url('Banner.png');
+            background-size: 80%; /* Ajusta el tamaño de la imagen de fondo */
+            background-position: center; /* Centra la imagen de fondo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            width: 500px; /* Ajusta el tamaño de la imagen pequeña */
+            font-size: 20px;
+            color: rgb(10, 10, 10);
+        }
+
+        select {
+            background-color: rgba(5, 75, 26, 0.7); /* Cambia el color de fondo del select */
+            font-family: 'Smooth v2', sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+            border: none; /* Elimina el borde del select si no lo deseas */
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        #walletAddress {
+            font-size: 24px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        #imagenPequena {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px; /* Ajusta el tamaño de la imagen pequeña */
+            height: 200px; /* Ajusta el tamaño de la imagen pequeña */
+            z-index: -1; /* Asegura que la imagen pequeña esté por encima del contenido */
+        }
+
+        button {
+            background-color: rgb(8, 184, 32);
+            border: none;
+            padding: 10px 50px;
+            border-radius: 5px;
+            margin: 10px 0;
+            cursor: pointer;
+            color: rgb(99, 219, 29);
+            font-weight: 600;
+            color: rgb(14, 8, 8);
+            font-size: 17px;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <img id="imagenPequena" src="profile.jpg" alt="Imagen Pequeña">
+    <nav>
+        <button id="signin">Sign into MetaMask</button>
+    </nav>
+    <span id="container" style="text-align: center;">
+         <div>
+            <p> <span id="walletAddress">WALLET ADDRESS</span></p>
+        </div>
+
+        <div>
+            <select type="text" id="amount">
+                <option value="0">Select Amount</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="4">5</option>
+                <option value="4">6</option>
+                <option value="4">7</option>
+                <option value="4">8</option>
+                <option value="4">9</option>
+                <option value="4">10</option>
+            </select>
+        </div>
+        <button id="mint">Mint</button>
+    </span>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.min.js"
+        integrity="sha512-0DdUXJsgP7+vcYvYj0snVxLfpdJQ7V+Iw92uq7Hn1jKQ2ZmXtZ4mJn5H5aTHKjzLkwRyS/E1ccOSdKcBnd1pJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.ethers.io/lib/ethers-5.0.umd.min.js"></script>
+
+    <script type="module" async crossorigin="anonymous">
+        const contractAddress = "0xE9e41343e352e54fF060b2bf263a196474d001dF";
+        const abi = [
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "quantity",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "mint",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            }
+        ];
+
+        window.addEventListener("load", async () => {
+            const ethereum = window.ethereum;
+
+            if (!ethereum) {
+                alert("MetaMask is not installed!");
+                return;
+            }
+
+            const signinEl = document.querySelector("#signin");
+            const mintBtn = document.getElementById("mint");
+            const amountEl = document.getElementById("amount");
+            const walletAddressEl = document.getElementById("walletAddress");
+
+            let account = null;
+
+            signinEl.addEventListener("click", async () => {
+                await connectToMetaMask();
+            });
+
+            mintBtn.addEventListener("click", async () => {
+                await mint();
+            });
+
+            async function connectToMetaMask() {
+                try {
+                    await ethereum.request({ method: "eth_requestAccounts" });
+                    account = ethereum.selectedAddress;
+                    walletAddressEl.textContent = account;
+                    toggleElementsVisibility(true);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            async function mint() {
+                const amount = parseInt(amountEl.value);
+
+                if (isNaN(amount) || amount <= 0) {
+                    alert("Please select a valid amount.");
+                    return;
+                }
+
+                try {
+                    const provider = new ethers.providers.Web3Provider(ethereum);
+                    const signer = provider.getSigner();
+                    const contract = new ethers.Contract(contractAddress, abi, signer);
+                    const price = amount === 1 ? ethers.BigNumber.from(0) : ethers.utils.parseEther((0.0013 * amount).toString());
+                    const tx = await contract.mint(amount, { value: price });
+                    await tx.wait();
+                    alert("Minted successfully!");
+                } catch (error) {
+                    console.error(error);
+                    alert("Failed to mint.");
+                }
+            }
+
+            function toggleElementsVisibility(connected) {
+                signinEl.hidden = connected;
+                document.getElementById("container").hidden = !connected;
+            }
+        });
+    </script>
+</body>
+
+</html>

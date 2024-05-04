@@ -1,0 +1,28 @@
+$env:CARGO_HOME = "$env:USERPROFILE\.cargo"
+
+Run the following Cargo command in your project directory:
+cargo add cargo-bpf
+Or add the following line to your Cargo.toml:
+cargo-bpf = "2.3.0"
+
+cargo install cargo-edit
+
+cargo install --force bpf-sys
+
+cargo install anchor-cli
+
+cargo build
+
+en archivo cargo.toml
+[dependencies]
+bpf-sys = "2.3.0"
+
+
+Run the following Cargo command in your project directory:
+cargo add bpf-sys
+Or add the following line to your Cargo.toml:
+bpf-sys = "2.3.0"
+
+-------------------------------------------------------------
+
+
